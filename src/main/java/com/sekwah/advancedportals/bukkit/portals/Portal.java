@@ -9,6 +9,7 @@ import com.sekwah.advancedportals.bukkit.config.ConfigAccessor;
 import com.sekwah.advancedportals.bukkit.config.ConfigHelper;
 import com.sekwah.advancedportals.bukkit.destinations.Destination;
 import com.sekwah.advancedportals.bukkit.effects.WarpEffects;
+import com.sekwah.advancedportals.bukkit.listeners.Listeners;
 import com.sekwah.advancedportals.bungee.BungeeMessages;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -533,7 +534,11 @@ public class Portal {
             outForSend.writeUTF("Connect");
             outForSend.writeUTF(bungeeServer);
 
-
+            // Removal of metadata when appearing on the server after the actual warp
+            // Fixes https://github.com/sekwah41/Advanced-Portals/issues/329
+            if (player.hasMetadata(Listeners.HAS_WARPED)) {
+                player.removeMetadata(Listeners.HAS_WARPED, plugin);
+            }
 
             portal.inPortal.add(player.getUniqueId());
             player.sendPluginMessage(plugin, "BungeeCord", outForSend.toByteArray());
